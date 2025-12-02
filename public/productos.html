@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos La Gran N</title>
+    <link rel="icon" href="img/icono.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <style>
+        /* Estilos generales del navbar */
+        .navbar { background-color: #e30613; }
+        .navbar-brand, .navbar-nav .nav-link { color: white !important; }
+
+        /* Estilos de los productos y novedades */
+        .card { margin-bottom: 20px; }
+        .explore-btn { background-color: #28a745; color: white; }
+
+         /* Estilos de las tarjetas */
+        .card { margin-bottom: 20px; }
+        /* Ajuste para que las tarjetas de Owl Carousel ocupen el espacio deseado */
+        .owl-carousel .item {
+        padding: 10px; /* Espacio entre tarjetas */
+        }
+        .owl-carousel .item .card {
+        margin: 0; /* Elimina margen adicional de la tarjeta dentro del item */
+        }
+
+        /* Estilos para la fecha en las tarjetas del carrusel */
+     /* Estilos para posicionar las flechas de Owl Carousel a los lados */
+    .owl-nav {
+        position: absolute; /* Permite posicionar los elementos hijo (las flechas) */
+        top: 50%; /* Centra verticalmente el contenedor de las flechas */
+        left: 0;
+        right: 0;
+        transform: translateY(-50%); /* Ajusta para centrar perfectamente */
+        display: flex; /* Para alinear las flechas en los extremos */
+        justify-content: space-between; /* Espacia las flechas a los lados */
+        padding: 0 10px; /* Un poco de espacio desde los bordes del carrusel */
+    }
+
+    .owl-nav button.owl-prev,
+    .owl-nav button.owl-next {
+        background: rgba(0, 0, 0, 0.5) !important; /* Fondo oscuro y semitransparente */
+        color: white !important; /* Texto blanco */
+        font-size: 1.5em !important; /* Tamaño de la fuente más grande */
+        margin: 0 !important; /* Elimina márgenes innecesarios */
+        padding: 5px 15px !important; /* Un poco de relleno */
+        border-radius: 5px !important; /* Bordes redondeados */
+        border: none !important; /* Elimina el borde */
+        position: static !important; /* Resetea la posición interna de Owl */
+        transform: none !important; /* Resetea transformaciones internas */
+    }
+
+    .owl-nav button.owl-prev:hover,
+    .owl-nav button.owl-next:hover {
+        background: rgba(0, 0, 0, 0.8) !important; /* Fondo más oscuro al pasar el ratón */
+        color: white !important;
+    }
+
+    /* Oculta los "dots" (puntos) de navegación si los tienes activos */
+    .owl-dots {
+        display: none !important;
+    }
+
+    /* Ajusta el padding del contenedor del carrusel para que las flechas no lo sobrepongan */
+    .owl-carousel {
+        padding: 0 30px; /* Añade espacio a los lados para que las flechas sean visibles */
+    }
+
+    
+    .card-img-top {
+        max-height: 200px; /* Ajusta esta altura según lo necesites */
+        width: auto !important; /* Permite que el ancho se ajuste proporcionalmente */
+        object-fit: contain; /* Mantiene la proporción y ajusta dentro del contenedor */
+        margin: 0 auto; /* Centra la imagen horizontalmente si es más pequeña */
+        display: block; /* Evita espacios extra debajo de la imagen */
+    }
+
+    /* También recuerda el CSS para las flechas laterales del carrusel */
+    .owl-nav {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+    }
+
+    .owl-nav button.owl-prev,
+    .owl-nav button.owl-next {
+        background: rgba(0, 0, 0, 0.5) !important;
+        color: white !important;
+        font-size: 1.5em !important;
+        margin: 0 !important;
+        padding: 5px 15px !important;
+        border-radius: 5px !important;
+        border: none !important;
+        position: static !important;
+        transform: none !important;
+    }
+
+    .owl-nav button.owl-prev:hover,
+    .owl-nav button.owl-next:hover {
+        background: rgba(0, 0, 0, 0.8) !important;
+        color: white !important;
+    }
+
+    .owl-dots {
+        display: none !important;
+    }
+
+    .owl-carousel {
+        padding: 0 30px;
+    }
+
+        /* Estilos para el botón de Iniciar sesión / Regístrate (no logueado) */
+        .login-register-btn {
+            background-color: transparent; /* Fondo transparente por defecto */
+            color: white; /* Texto blanco por defecto */
+            border: 2px solid white; /* Borde blanco */
+            border-radius: 50px; /* Bordes muy redondeados para forma de píldora */
+            padding: 8px 15px; /* Espaciado interno */
+            font-weight: bold;
+            transition: all 0.3s ease; /* Transición suave para el hover */
+            display: flex; /* Para alinear el icono y el texto */
+            align-items: center; /* Centrar verticalmente */
+            gap: 8px; /* Espacio entre el icono y el texto */
+            text-decoration: none; /* Quita el subrayado del enlace */
+        }
+
+        .login-register-btn:hover {
+            background-color: white; /* Fondo blanco al pasar el ratón */
+            color: #e30613; /* Texto rojo Nintendo al pasar el ratón */
+            border-color: white; /* Mantener borde blanco al pasar el ratón */
+        }
+
+        .login-register-btn .fas {
+            font-size: 1.1em; /* Ajusta el tamaño del icono si es necesario */
+        }
+
+        /* Aplicar estilos para pantallas grandes (desktop) al botón de login/registro */
+        @media (min-width: 992px) {
+            .login-register-btn {
+                background-color: #e30613; /* Fondo rojo Nintendo */
+                color: white; /* Texto blanco */
+                border: 2px solid #e30613; /* Borde rojo */
+            }
+            .login-register-btn:hover {
+                background-color: white; /* Fondo blanco al pasar el ratón */
+                color: #e30613; /* Texto rojo Nintendo al pasar el ratón */
+                border-color: #e30613; /* Borde rojo al pasar el ratón */
+            }
+        }
+
+        /* Ajustes para móviles */
+        @media (max-width: 991.98px) {
+            .navbar-collapse .login-register-btn {
+                width: fit-content;
+                margin-top: 10px;
+                margin-left: auto;
+                margin-right: auto;
+                border-color: #e30613;
+                color: #e30613;
+            }
+            .navbar-collapse .login-register-btn:hover {
+                background-color: #e30613;
+                color: white;
+            }
+        }
+
+        /* Estilos para la sección de usuario logueado (visible cuando hay sesión) */
+        .profile-section {
+            display: flex; /* Para que el saludo y el botón estén en línea */
+            align-items: center; /* Centrar verticalmente */
+            gap: 15px; /* Espacio entre el saludo y el botón */
+            color: white; /* Color de texto para el saludo */
+            font-weight: bold;
+            /* Estos estilos aseguran que se vea bien en el navbar, similar al botón de login */
+            padding: 8px 15px;
+            border: 2px solid #e30613; /* Borde rojo por defecto, similar al login-register-btn de desktop */
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Efecto sutil al pasar el ratón por toda la sección del perfil */
+        }
+
+        /*ESTILO APLICADO AL ENLACE "MI PERFIL" PARA MANTENER LA CONSISTENCIA */
+        .profile-section .profile-link-item { /* Usé una clase más específica para evitar colisiones */
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem; /* Un poco más pequeño que el mensaje de bienvenida */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0 5px; /* Ajustado para que se vea bien dentro del profile-section */
+            transition: color 0.3s ease;
+        }
+
+        .profile-section .profile-link-item:hover {
+            color: #f0f0f0; /* Un blanco un poco más claro al pasar el ratón */
+        }
+
+        .profile-section .profile-link-item .fas {
+            font-size: 0.9em;
+        }
+
+
+        /* Estilos para la sección de bienvenida/logout */
+        #userProfile { /* Nota: En tu HTML original usas #user-profile, lo mantengo así */
+            display: flex;
+            align-items: center;
+        }
+        #welcomeMessage { /* Nota: En tu HTML original usas #welcome-message, lo mantengo así */
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Estilos para el botón de Cerrar Sesión dentro de la sección de perfil */
+        .logout-btn {
+            background-color: transparent; /* Fondo transparente por defecto */
+            color: white; /* Texto blanco por defecto */
+            border: 2px solid white; /* Borde blanco */
+            border-radius: 50px; /* Bordes muy redondeados para forma de píldora */
+            padding: 8px 15px; /* Espaciado interno, igual que login-register-btn */
+            font-weight: bold;
+            transition: all 0.3s ease; /* Transición suave para el hover */
+            text-decoration: none; /* Quita el subrayado del enlace */
+            display: flex; /* Para alinear el icono y el texto */
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background-color: white; /* Fondo blanco al pasar el ratón */
+            color: #e30613; /* Texto rojo Nintendo al pasar el ratón */
+            border-color: white; /* Mantener borde blanco al pasar el ratón */
+        }
+
+        /* Aplicar estilos para pantallas grandes (desktop) al botón de cerrar sesión */
+        @media (min-width: 992px) {
+            .logout-btn {
+                background-color: #e30613; /* Fondo rojo Nintendo */
+                color: white; /* Texto blanco */
+                border: 2px solid #e30613; /* Borde rojo */
+            }
+            .logout-btn:hover {
+                background-color: white; /* Fondo blanco al pasar el ratón */
+                color: #e30613; /* Texto rojo Nintendo al pasar el ratón */
+                border-color: #e30613; /* Borde rojo al pasar el ratón */
+            }
+        }
+
+        /* Aplicar estilos para pantallas grandes (desktop) al botón de cerrar sesión */
+        @media (min-width: 992px) {
+            .logout-btn {
+                background-color: #e30613; /* Fondo rojo Nintendo */
+                color: white; /* Texto blanco */
+                border: 2px solid #e30613; /* Borde rojo */
+            }
+            .logout-btn:hover {
+                background-color: white; /* Fondo blanco al pasar el ratón */
+                color: #e30613; /* Texto rojo Nintendo al pasar el ratón */
+                border-color: #e30613; /* Borde rojo al pasar el ratón */
+            }
+        }
+
+        /* Ajustes para móviles */
+        @media (max-width: 991.98px) {
+            .navbar-collapse .logout-btn {
+                width: fit-content;
+                margin-top: 10px;
+                margin-left: auto;
+                margin-right: auto;
+                border-color: #e30613;
+                color: #e30613;
+            }
+            .navbar-collapse .logout-btn:hover {
+                background-color: #e30613;
+                color: white;
+            }
+            /* Ajuste para que el perfil de usuario también se vea bien apilado en móvil */
+            .profile-section {
+                flex-direction: column; /* Apilar elementos en móvil */
+                align-items: flex-start; /* Alinear a la izquierda */
+                gap: 5px;
+                padding: 5px 0;
+                border: none; /* Eliminar borde para no duplicar en móvil si ya lo tiene el botón */
+            }
+        }
+
+        /* Estilos para el footer */
+        footer {
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 0 !important;
+        }
+        .footer-top-banner {
+            background-color: #e30613;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 10px 0;
+        }
+        .footer-top-banner h4 { margin-bottom: 0; }
+        footer .text-uppercase {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        footer .list-unstyled li a {
+            color: #e30613 !important;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 3px 0;
+        }
+        footer .list-unstyled li a:hover {
+            color: #a00404 !important;
+            text-decoration: underline;
+        }
+        footer p {
+            font-size: 0.9rem;
+            color: #555;
+        }
+        footer .text-center.p-3 {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: #555;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">La Gran N</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="productos.html">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="novedades.html">Novedades y Anuncios</a></li>
+                </ul>
+                <div class="navbar-nav">
+                    <div id="auth-links" style="display: flex; align-items: center; gap: 8px;">
+                        <a class="btn login-register-btn" href="/login">
+                            <i class="fas fa-user"></i> Iniciar sesión / Regístrate
+                        </a>
+                    </div>
+
+                    <div id="user-profile" class="profile-section" style="display: none;">
+                        <span id="welcome-message"></span>
+                        <a href="/perfil" class="profile-link-item">
+                            <i class="fas fa-user-circle"></i> Mi Perfil
+                        </a>
+                        <a href="/logout" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+     <div class="container mt-4">
+    <h2 class="text-center mb-4">¡Consola retros y actuales!: </h2>
+    <div class="owl-carousel owl-theme" id="productCarousel1">
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="consolas/nintedo-NES.jpg" class="card-img-top" alt="Nintendo Entertainment System" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Nintendo Entertainment System (NES)</h5>
+                    <p class="card-text">La consola que revivió la industria de los videojuegos.</p>
+                    <span class="product-date">Fecha de lanzamiento: 15/07/1983 (Japón)</span>
+                    <p class="card-text">$4,500.00 MXN</p>
+                    <a href="nintendo-entertainment-system-nes.html?id=6" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="consolas/nintendo-3ds.jpg" class="card-img-top" alt="Nintendo 3DS" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Nintendo 3DS</h5>
+                    <p class="card-text">¡Juegos en 3D sin necesidad de gafas!</p>
+                    <span class="product-date">Fecha de lanzamiento: 26/02/2011 (Japón)</span>
+                    <p class="card-text">$4,000.00 MXN</p>
+                    <a href="nintendo-3ds.html?id=7" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="consolas/nintendo-64.jpg" class="card-img-top" alt="Nintendo 64" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Nintendo 64</h5>
+                    <p class="card-text">¡La potencia de los 64 bits y juegos en 3D!</p>
+                    <span class="product-date">Fecha de lanzamiento: 23/06/1996 (Japón)</span>
+                    <p class="card-text">$5,000.00 MXN</p>
+                    <a href="nintendo-64.html?id=8" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="consolas/nintendo-ds.jpg" class="card-img-top" alt="Nintendo DS" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Nintendo DS</h5>
+                    <p class="card-text">¡Doble pantalla y una nueva forma de jugar!</p>
+                    <span class="product-date">Fecha de lanzamiento: 21/11/2004 (Norteamérica)</span>
+                    <p class="card-text">$3,000.00 MXN</p>
+                    <a href="nintendo-ds.html?id=9" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="img/nintendo-switch-2.jpg" class="card-img-top" alt="Nintendo Switch" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Nintendo Switch 2</h5>
+                    <p class="card-text">¡Ya esta aquí la nueva Nintendo Switch 2!</p>
+                    <span class="product-date">Fecha de lanzamiento: 05/06/2025</span>
+                    <p class="card-text">$12,500.00 MXN</p>
+                    <a href="nintendo-switch-2.html?id=3" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="container mt-4">
+    <h2 class="text-center mb-4">Videojuegos: </h2>
+    <div class="owl-carousel owl-theme" id="productCarousel2">
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="videojuegos/donkey-kong.webp" class="card-img-top" alt="Donkey Kong Country: Tropical Freeze" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Donkey Kong Country Returns</h5>
+                    <p class="card-text">¡Únete a Donkey Kong y sus amigos en una aventura gélida llena de desafíos!</p>
+                    <span class="product-date">Fecha de lanzamiento: 16/01/2025</span>
+                    <p class="card-text">$999.00 MXN</p>
+                    <a href="donkey-kong-country-returns.html?id=10" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="videojuegos/luiges-mansion.webp" class="card-img-top" alt="Luigi's Mansion 3" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Luigi's Mansion 2</h5>
+                    <p class="card-text">Ayuda a Luigi a rescatar a Mario y sus amigos en un hotel embrujado.</p>
+                    <span class="product-date">Fecha de lanzamiento: 27/06/2024</span>
+                    <p class="card-text">$1,199.00 MXN</p>
+                    <a href="luigis-mansion-2.html?id=1" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="videojuegos/mario-deluxe-u.webp" class="card-img-top" alt="New Super Mario Bros. U Deluxe" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">New Super Mario Bros. U Deluxe</h5>
+                    <p class="card-text">La clásica aventura de Mario en 2D con nuevos personajes y modos.</p>
+                    <span class="product-date">Fecha de lanzamiento: 11/01/2019</span>
+                    <p class="card-text">$950.00 MXN</p>
+                    <a href="new-super-mario-bros-u-deluxe.html?id=2" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="videojuegos/mario-kard-deluxe.webp" class="card-img-top" alt="Mario Kart 8 Deluxe" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Mario Kart 8 Deluxe</h5>
+                    <p class="card-text">¡Corre con tus amigos en la versión definitiva de Mario Kart 8!</p>
+                    <span class="product-date">Fecha de lanzamiento: 28/04/2017</span>
+                    <p class="card-text">$1,299.00 MXN</p>
+                    <a href="mario-kart-8-deluxe.html?id=4" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="card">
+                <div style="text-align: center; padding: 15px;">
+                    <img src="videojuegos/mario-odyssey.webp" class="card-img-top" alt="Super Mario Odyssey" style="max-width: 100%; height: auto; border-radius: 8px;">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Super Mario Odyssey</h5>
+                    <p class="card-text">¡Una aventura épica trotamundos para rescatar a la Princesa Peach!</p>
+                    <span class="product-date">Fecha de lanzamiento: 27/09/2017</span>
+                    <p class="card-text">$1,199.00 MXN</p>
+                    <a href="super-mario-odyssey.html?id=5" class="btn btn-primary">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+
+
+    <footer class="bg-light text-center text-lg-start mt-auto">
+    
+    <div class="footer-top-banner text-center py-3" style="background-color: #e30613; color: white;">
+        <h4 class="mb-0 fw-bold">La Gran N – Tu tienda Nintendo en Xalapa</h4>
+    </div>
+
+    <div class="container py-5">
+        <div class="row">
+
+            <!-- Columna 1: Sobre nosotros -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-uppercase fw-bold mb-3">La Gran N</h5>
+                <p class="text-muted">
+                    Tu tienda 100% especializada en Nintendo en Xalapa, Veracruz.<br>
+                    Consolas y juegos.
+                </p>
+            </div>
+
+            <!-- Columna 2: Enlaces rápidos -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-uppercase fw-bold mb-3">Explora</h5>
+                <ul class="list-unstyled">
+                    <li><a href="../index.html" class="text-dark">Inicio</a></li>
+                    <li><a href="../productos.html" class="text-dark">Productos</a></li>
+                    <li><a href="../novedades.html" class="text-dark">Novedades</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Contáctanos y Síguenos -->
+<div class="col-lg-6 col-md-12 mb-4">
+    <div class="row align-items-start">
+
+        
+        <div class="col-lg-7 col-md-6">
+            <h5 class="text-uppercase fw-bold mb-3">Contáctanos</h5>
+            <ul class="list-unstyled text-muted mb-0">
+                <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>
+                    Av. 20 de Noviembre #245, Col. Centro<br>Xalapa, Veracruz, C.P. 91000
+                </li>
+                <li class="mb-2"><i class="fas fa-phone-alt me-2"></i>(228) 245-67-89</li>
+                <li class="mb-2"><i class="fas fa-clock me-2"></i>
+                    Lun-Sáb: 10:00 - 20:00 | Dom: 11:00 - 18:00
+                </li>
+            </ul>
+        </div>
+
+        
+        <div class="col-lg-5 col-md-6 text-lg-end">
+            <h5 class="text-uppercase fw-bold mb-3">Síguenos</h5>
+            
+            
+            <div class="d-flex justify-content-lg-end justify-content-md-start gap-4 mb-3">
+                <a href="#" class="text-dark fs-3"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-dark fs-3"><i class="fab fa-tiktok"></i></a>
+                <a href="#" class="text-dark fs-3"><i class="fab fa-twitter"></i></a>
+            </div>
+
+            
+            <div class="text-muted small text-lg-end">
+                <div>@lagrann_xalapa</div>
+                <div>@lagrann.oficial</div>
+                <div>@LaGranN_Xalapa</div>
+            </div>
+        </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pie final -->
+    <div class="text-center p-3" style="background-color: rgba(0,0,0,0.1); font-size: 0.9rem;">
+        © 2025 La Gran N – Todos los derechos reservados | Xalapa, Veracruz, México
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        $(document).ready(function(){
+            $("#productCarousel1").owlCarousel({
+                loop:true,
+                margin:10,
+                nav:true,
+                dots:false, 
+                responsive:{
+                    0:{
+                        items:1, 
+                        slideBy: 1 
+                    },
+                    768:{
+                        items:2, 
+                        slideBy: 1
+                    },
+                    992:{
+                        items:3, 
+                        slideBy: 1 
+                    }
+                }
+            });
+
+            $("#productCarousel2").owlCarousel({
+                loop:true,
+                margin:10,
+                nav:true,
+                dots:false,
+                responsive:{
+                    0:{
+                        items:1,
+                        slideBy: 1
+                    },
+                    768:{
+                        items:2,
+                        slideBy: 1
+                    },
+                    992:{
+                        items:3,
+                        slideBy: 1
+                    }
+                }
+            });
+
+            $("#productCarousel3").owlCarousel({
+                loop:true,
+                margin:10,
+                nav:true,
+                dots:false,
+                responsive:{
+                    0:{
+                        items:1,
+                        slideBy: 1
+                    },
+                    768:{
+                        items:2,
+                        slideBy: 1
+                    },
+                    992:{
+                        items:3,
+                        slideBy: 1
+                    }
+                }
+            });
+        });
+
+        // JavaScript para verificar el estado de la sesión
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authLinks = document.getElementById('auth-links');
+            const userProfile = document.getElementById('user-profile');
+            const welcomeMessage = document.getElementById('welcome-message');
+
+            // console.log para depuración
+            console.log("DOM Cargado. Verificando estado de sesión...");
+            console.log("authLinks encontrado:", authLinks ? true : false, authLinks);
+            console.log("userProfile encontrado:", userProfile ? true : false, userProfile);
+
+            try {
+                const response = await fetch('/api/user-status');
+                const data = await response.json();
+                console.log('Respuesta de /api/user-status:', data);
+
+                if (data.loggedIn) {
+                    // Si el usuario está logueado
+                    if (authLinks) authLinks.style.display = 'none'; // Oculta el botón de login/registro
+                    if (userProfile) {
+                        userProfile.style.display = 'flex'; // Muestra la sección de perfil
+                        welcomeMessage.textContent = `Hola, ${data.username}`; // Muestra el mensaje de bienvenida
+                    }
+                } else {
+                    // Si el usuario no está logueado
+                    if (authLinks) authLinks.style.display = 'flex'; // Muestra el botón de login/registro
+                    if (userProfile) userProfile.style.display = 'none'; // Oculta la sección de perfil
+                }
+            } catch (error) {
+                console.error('Error al verificar el estado de la sesión:', error);
+                // En caso de error (ej. servidor no responde), muestra los enlaces de login/registro por defecto
+                if (authLinks) authLinks.style.display = 'flex';
+                if (userProfile) userProfile.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

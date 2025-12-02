@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargando producto...</title>
+    <link rel="icon" href="../img/icono.png" type="image/png">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* === TODOS TUS ESTILOS ORIGINALES (SIN CAMBIAR NADA) === */
+        .navbar { background-color: #e30613; }
+        .navbar-brand, .navbar-nav .nav-link { color: white !important; }
+        .login-register-btn {
+            background-color: transparent; color: white; border: 2px solid white;
+            border-radius: 50px; padding: 8px 15px; font-weight: bold;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;
+        }
+        .login-register-btn:hover { background-color: white; color: #e30613; border-color: white; }
+        .login-register-btn .fas { font-size: 1.1em; }
+        @media (min-width: 992px) {
+            .login-register-btn { background-color: #e30613; border: 2px solid #e30613; }
+            .login-register-btn:hover { background-color: white; color: #e30613; border-color: #e30613; }
+        }
+        @media (max-width: 991.98px) {
+            .navbar-collapse .login-register-btn { width: fit-content; margin-top: 10px; margin-left: auto; margin-right: auto; border-color: #e30613; color: #e30613; }
+            .navbar-collapse .login-register-btn:hover { background-color: #e30613; color: white; }
+        }
+        #welcome-message, #profile-link, #logout-link {
+            background-color: transparent; color: white; border: 2px solid white;
+            border-radius: 50px; padding: 8px 15px; font-weight: bold;
+            transition: all 0.3s ease; text-decoration: none; display: inline-flex;
+            align-items: center; gap: 8px; margin-right: 15px;
+        }
+        #welcome-message:hover, #profile-link:hover, #logout-link:hover { background-color: white; color: #e30613; border-color: white; }
+        @media (min-width: 992px) {
+            #welcome-message, #profile-link, #logout-link { background-color: #e30613; border: 2px solid #e30613; }
+            #welcome-message:hover, #profile-link:hover, #logout-link:hover { background-color: white; color: #e30613; border-color: #e30613; }
+        }
+        footer { background-color: #f8f9fa; color: #333; padding-top: 0 !important; }
+        .footer-top-banner { background-color: #e30613; color: white; font-size: 1.8rem; font-weight: bold; padding: 10px 0; }
+        .footer-top-banner h4 { margin-bottom: 0; }
+        footer .text-uppercase { color: #333; font-weight: bold; margin-bottom: 15px; }
+        footer .list-unstyled li a { color: #e30613 !important; text-decoration: none; transition: color 0.3s ease; display: block; padding: 3px 0; }
+        footer .list-unstyled li a:hover { color: #a00404 !important; text-decoration: underline; }
+        footer p { font-size: 0.9rem; color: #555; }
+        footer .text-center.p-3 { background-color: rgba(0, 0, 0, 0.1); color: #555; font-size: 0.85rem; }
+        .product-detail-image { width: 100%; max-height: 500px; object-fit: contain; border-radius: 8px; margin-bottom: 20px; }
+        .small-images-gallery { display: flex; justify-content: center; flex-wrap: wrap; }
+        .small-images-gallery img { width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; margin: 5px; opacity: 0.7; transition: all 0.3s ease; }
+        .small-images-gallery img:hover, .small-images-gallery img.active { border-color: #007bff; opacity: 1; }
+        .price-text { font-size: 2.5em; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+        .btn-buy { background-color: #28a745; border-color: #28a745; color: white; padding: 10px 30px; font-size: 1.2em; border-radius: 5px; width: 100%; }
+        .btn-buy:hover { background-color: #218838; border-color: #1e7e34; }
+        .btn-back-to-products { background-color: #007bff; color: white; margin-top: 20px; }
+        .btn-back-to-products:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg" style="background-color: #e30613;">
+    <div class="container-fluid">
+
+    <a class="navbar-brand text-white fw-bold" href="../index.html">La Gran N</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- Menú principal-->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item"><a class="nav-link text-white" href="../index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="../productos.html">Productos</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="../novedades.html">Novedades y Anuncios</a></li>
+      </ul>
+
+      <ul class="navbar-nav">
+
+        <!-- Mensaje de bienvenida-->
+        <li class="nav-item">
+          <span id="welcome-message" class="text-white fw-bold mx-2" style="display: none;"></span>
+        </li>
+
+        <!-- Mi Perfil-->
+        <li class="nav-item">
+          <a id="profile-link" href="/perfil" class="nav-link text-white" style="display: none;">
+            <i class="fas fa-user-circle"></i> Mi Perfil
+          </a>
+        </li>
+
+        <!-- Cerrar sesión-->
+        <li class="nav-item">
+          <a id="logout-link" href="/logout" class="nav-link text-white" style="display: none;">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+          </a>
+        </li>
+
+        <!-- Botón Iniciar sesión / Regístrate-->
+        <li class="nav-item">
+          <a href="/login" class="btn login-register-btn" id="loginBtn">
+            <i class="fas fa-user me-2"></i> Iniciar sesión / Regístrate
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+    
+    <div class="container mt-4">
+        <div class="row">
+
+            <div class="col-md-7 text-center">
+                <img id="mainProductImage" src="../img/no-image.jpg" class="img-fluid product-detail-image" alt="Cargando imagen...">
+                <div id="smallImagesGallery" class="small-images-gallery mt-3"></div>
+            </div>
+
+            <div class="col-md-5">
+                <h1 id="productTitleDisplay">Cargando...</h1>
+                <p class="price-text" id="productPrice">$0.00 MXN</p>
+                <p id="productDescription">Cargando descripción...</p>
+                <p class="mt-2" id="productStock">Stock: 0</p>
+                <p class="text-muted"><strong>Fecha de lanzamiento:</strong> <span id="releaseDate">N/A</span></p>
+                <p class="text-muted"><strong>Versión:</strong> <span id="version">N/A</span></p>
+                <p class="text-muted"><strong>Formato:</strong> <span id="format">N/A</span></p>
+                <p class="text-muted"><strong>Clasificación:</strong> <span id="rating">N/A</span></p>
+                <p class="text-muted"><strong>Compras dentro del juego:</strong> <span id="inGamePurchases">N/A</span></p>
+                <button id="buyButton" class="btn btn-buy mt-4">Comprar</button>
+                <p id="message" class="mt-2"></p>
+                <a href="../productos.html" class="btn btn-back-to-products">Volver a Productos</a>
+            </div>
+        </div>
+    </div>
+
+   <footer class="bg-light text-center text-lg-start mt-auto">
+    
+    <div class="footer-top-banner text-center py-3" style="background-color: #e30613; color: white;">
+        <h4 class="mb-0 fw-bold">La Gran N – Tu tienda Nintendo en Xalapa</h4>
+    </div>
+
+    <div class="container py-5">
+        <div class="row">
+
+            <!-- Columna 1: Sobre nosotros -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-uppercase fw-bold mb-3">La Gran N</h5>
+                <p class="text-muted">
+                    Tu tienda 100% especializada en Nintendo en Xalapa, Veracruz.<br>
+                    Consolas y juegos.
+                </p>
+            </div>
+
+            <!-- Columna 2: Enlaces rápidos -->
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h5 class="text-uppercase fw-bold mb-3">Explora</h5>
+                <ul class="list-unstyled">
+                    <li><a href="../index.html" class="text-dark">Inicio</a></li>
+                    <li><a href="../productos.html" class="text-dark">Productos</a></li>
+                    <li><a href="../novedades.html" class="text-dark">Novedades</a></li>
+                </ul>
+            </div>
+
+           <!-- Columna 3: Contáctanos y Síguenos-->
+<div class="col-lg-6 col-md-12 mb-4">
+    <div class="row">
+
+        
+        <div class="col-lg-7 col-md-6">
+            <h5 class="text-uppercase fw-bold mb-4">Contáctanos</h5>
+            <ul class="list-unstyled text-muted">
+                <li class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>Av. 20 de Noviembre #245, Col. Centro<br>Xalapa, Veracruz, C.P. 91000</li>
+                <li class="mb-3"><i class="fas fa-phone-alt me-2"></i>(228) 245-67-89</li>
+                <li class="mb-3"><i class="fas fa-clock me-2"></i>Lun-Sáb: 10:00 - 20:00 | Dom: 11:00 - 18:00</li>
+            </ul>
+        </div>
+
+        
+        <div class="col-lg-5 col-md-6 text-center text-lg-end">
+            <h5 class="text-uppercase fw-bold mb-4">Síguenos</h5>
+            
+            
+            <div class="mb-3">
+                <a href="#" class="text-dark mx-3"><i class="fab fa-instagram fa-2x"></i></a>
+                <a href="#" class="text-dark mx-3"><i class="fab fa-tiktok fa-2x"></i></a>
+                <a href="#" class="text-dark mx-3"><i class="fab fa-twitter fa-2x"></i></a>
+            </div>
+
+            
+            <div class="text-muted small">
+                <div>@lagrann_xalapa</div>
+                <div>@lagrann.oficial</div>
+                <div>@LaGranN_Xalapa</div>
+            </div>
+        </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Pie final -->
+    <div class="text-center p-3" style="background-color: rgba(0,0,0,0.1); font-size: 0.9rem;">
+        © 2025 La Gran N – Todos los derechos reservados | Xalapa, Veracruz, México
+    </div>
+</footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        //Imagen
+        const PRODUCT_IMAGE = 'consolas/nintendo-64.jpg'
+
+            document.getElementById('mainProductImage').src = PRODUCT_IMAGE;
+            document.getElementById('mainProductImage').onerror = function() {
+            console.warn('Imagen no encontrada:', PRODUCT_IMAGE);
+            this.src = '../img/no-image.jpg';
+        };
+
+       // === OBTENER ID DE LA URL ===
+    function getProductIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('id');
+    }
+
+    // === VERIFICAR SESIÓN ===
+    async function checkSession() {
+        try {
+            const response = await fetch('/api/user-status', { credentials: 'include' });
+            const data = await response.json();
+
+            const authLinks = document.querySelector('.login-register-btn');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const profileLink = document.getElementById('profile-link');
+            const logoutLink = document.getElementById('logout-link');
+
+            if (data.loggedIn) {
+                if (authLinks) authLinks.style.display = 'none';
+                if (welcomeMessage) {
+                    welcomeMessage.style.display = 'inline-flex';
+                    welcomeMessage.textContent = `Hola, ${data.username}`;
+                }
+                if (profileLink) profileLink.style.display = 'inline-flex';
+                if (logoutLink) logoutLink.style.display = 'inline-flex';
+            } else {
+                if (authLinks) authLinks.style.display = 'flex';
+                if (welcomeMessage) welcomeMessage.style.display = 'none';
+                if (profileLink) profileLink.style.display = 'none';
+                if (logoutLink) logoutLink.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error sesión:', error);
+        }
+    }
+
+    // === CARGAR DATOS DEL PRODUCTO ===
+    async function loadProduct() {
+        const productId = getProductIdFromUrl();
+        if (!productId) {
+            document.getElementById('message').innerHTML = '<div class="alert alert-danger">ID no encontrado</div>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/productos/${productId}`, { credentials: 'include' });
+            if (!response.ok) throw new Error('Producto no encontrado');
+            const product = await response.json();
+
+            // Guardar producto globalmente
+            window.currentProduct = product;
+
+            document.title = `${product.nombre} - La Gran N`;
+            document.getElementById('productTitleDisplay').textContent = product.nombre;
+            document.getElementById('productDescription').textContent = product.descripcion || 'Sin descripción';
+
+            const precio = parseFloat(product.precio || 0);
+            document.getElementById('productPrice').textContent = 
+                isNaN(precio) ? '$0.00 MXN' : `$${precio.toLocaleString('es-MX')} MXN`;
+
+            document.getElementById('productStock').textContent = `Stock: ${product.stock || 0}`;
+            document.getElementById('releaseDate').textContent = product.releaseDate ? new Date(product.releaseDate).toLocaleDateString('es-MX') : 'N/A';
+            document.getElementById('version').textContent = product.version || 'N/A';
+            document.getElementById('format').textContent = product.format || 'Físico';
+            document.getElementById('rating').textContent = product.rating || 'A';
+            document.getElementById('inGamePurchases').textContent = product.inGamePurchases ? 'Sí' : 'No';
+
+            // Deshabilitar botón si no hay stock
+            if ((product.stock || 0) <= 0) {
+                const btn = document.getElementById('buyButton');
+                btn.disabled = true;
+                btn.textContent = 'Sin stock';
+                btn.classList.remove('btn-buy');
+                btn.classList.add('btn-secondary');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('message').innerHTML = '<div class="alert alert-danger">Error al cargar el producto</div>';
+        }
+    }
+
+    // === BOTÓN COMPRAR ===
+    document.getElementById('buyButton').addEventListener('click', async () => {
+        if (!window.currentProduct) {
+            document.getElementById('message').innerHTML = '<div class="alert alert-danger">Producto no cargando...</div>';
+            return;
+        }
+
+        const product = window.currentProduct;
+
+        try {
+            const res = await fetch('/api/user-status', { credentials: 'include' });
+            const data = await res.json();
+            if (!data.loggedIn) {
+                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.href);
+                return;
+            }
+
+            const purchaseForm = document.createElement('div');
+            purchaseForm.innerHTML = `
+                <div id="purchaseForm" class="card mt-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Formulario de Compra</h3>
+                        <form id="purchaseFormData">
+                            <div class="form-group">
+                                <label for="quantity">Cantidad</label>
+                                <input type="number" class="form-control" id="quantity" min="1" value="1" required style="width: 100px;">
+                                <small class="text-muted">Stock disponible: <strong>${product.stock || 0}</strong></small>
+                            </div>
+                            <div class="form-group"><label for="name">Nombre</label><input type="text" class="form-control" id="name" required maxlength="50" placeholder="Nombre"></div>
+                            <div class="form-group"><label for="phone">Teléfono</label><input type="tel" class="form-control" id="phone" required maxlength="10" placeholder="Télefono"></div>
+                            <div class="form-group"><label for="address">Dirección</label><input type="text" class="form-control" id="address" required maxlength="100" placeholder="dirección"></div>
+                            <div class="form-group"><label for="postalCode">Código Postal</label><input type="text" class="form-control" id="postalCode" required maxlength="5" placeholder="CódigoPostal"></div>
+                            <div class="form-group"><label for="cardNumber">Número de Tarjeta</label><input type="text" class="form-control" id="cardNumber" required maxlength="19" placeholder="Número de Tarjeta"></div>
+                            <div class="form-group"><label for="expiryDate">Fecha de Expiración (MM/AA)</label><input type="text" class="form-control" id="expiryDate" required maxlength="5" placeholder="MM/AA"></div>
+                            <div class="form-group"><label for="cvv">CVV</label><input type="text" class="form-control" id="cvv" required maxlength="4" placeholder="CVV"></div>
+                            <button type="submit" class="btn btn-primary mt-3">Confirmar Compra</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+
+            const existing = document.getElementById('purchaseForm');
+            if (existing) existing.remove();
+
+            document.querySelector('.container').appendChild(purchaseForm);
+            document.getElementById('message').innerHTML = '';
+
+            // === CONFIGURAR CANTIDAD ===
+            const quantityInput = document.getElementById('quantity');
+            const maxStock = product.stock || 0;
+            quantityInput.max = maxStock;
+            if (maxStock === 0) quantityInput.disabled = true;
+
+            quantityInput.addEventListener('input', () => {
+                let val = parseInt(quantityInput.value) || 0;
+                if (val > maxStock) val = maxStock;
+                if (val < 1 && maxStock > 0) val = 1;
+                quantityInput.value = val;
+            });
+
+        } catch (error) {
+            document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        }
+    });
+
+   // === ENVÍO DEL FORMULARIO ===
+document.addEventListener('submit', async (e) => {
+    if (e.target.id === 'purchaseFormData') {
+        e.preventDefault();
+
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        const productId = getProductIdFromUrl();
+
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const address = document.getElementById('address').value;
+        const postalCode = document.getElementById('postalCode').value;
+
+        const body = {
+            quantity,
+            name,
+            phone,
+            address,
+            postalCode,
+            cardNumber: document.getElementById('cardNumber').value,
+            expiryDate: document.getElementById('expiryDate').value,
+            cvv: document.getElementById('cvv').value
+        };
+
+        try {
+            const res = await fetch(`/api/comprar/${productId}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const result = await res.json();
+
+            if (res.ok) {  
+                const compraId = result.compraId || result.id || result._id;  
+
+                if (!compraId) {
+                    document.getElementById('message').innerHTML = '<div class="alert alert-danger">Error: No se recibió ID de compra</div>';
+                    return;
+                }
+
+                // Redirigir al ticket con todos los datos
+                const ticketUrl = `/ticket.html?id=${encodeURIComponent(compraId)}` +
+                    `&producto=${encodeURIComponent(window.currentProduct.nombre)}` +
+                    `&precio=${window.currentProduct.precio}` +
+                    `&cantidad=${quantity}` +
+                    `&total=${window.currentProduct.precio * quantity}` +
+                    `&nombre=${encodeURIComponent(name)}` +
+                    `&telefono=${encodeURIComponent(phone)}` +
+                    `&direccion=${encodeURIComponent(address)}` +
+                    `&cp=${encodeURIComponent(postalCode)}`;
+
+                window.location.href = ticketUrl;
+
+            } else {
+                document.getElementById('message').innerHTML = 
+                    `<div class="alert alert-danger">${result.message || 'Error al procesar la compra'}</div>`;
+            }
+
+        } catch (err) {
+            console.error('Error en compra:', err);
+            document.getElementById('message').innerHTML = '<div class="alert alert-danger">Error de conexión</div>';
+        }
+    }
+});
+
+    // === INICIAR TODO ===
+    checkSession();
+    loadProduct();
+    loadProductImage();
+    </script>
+</body>
+</html>

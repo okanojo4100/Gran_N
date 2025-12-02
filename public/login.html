@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Gran N - Iniciar Sesión</title>
+    <link rel="icon" href="img/icono.png" type="image/png"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+
+         /*Estilos para el formulario*/
+        body {
+            background-color: #f0f0f0; /* Fondo gris claro */
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #e30613; /* Rojo Nintendo para la barra superior */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand-custom {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+        }
+        .content-wrapper {
+            flex-grow: 1; /* Permite que el contenido ocupe el espacio disponible */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centra el formulario verticalmente */
+            align-items: center; /* Centra el formulario horizontalmente */
+            padding: 20px;
+        }
+        .login-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px; /* Ancho máximo para el formulario */
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+        .form-label-custom {
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem; /* Tamaño de fuente ligeramente más pequeño */
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            width: 100%;
+            margin-bottom: 15px; /* Espacio entre los campos */
+        }
+        .btn-red {
+            background-color: #e30613; /* Rojo Nintendo para los botones */
+            color: white;
+            border: none;
+            border-radius: 50px; /* Botones redondeados */
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Botón de iniciar sesión al 100% de ancho */
+            margin-top: 20px;
+        }
+        .btn-red:hover {
+            background-color: #a00404; /* Rojo más oscuro al pasar el ratón */
+            color: white; /* Asegura el color blanco al hover */
+        }
+        .register-text {
+            margin-top: 30px;
+            font-size: 1rem;
+            color: #555;
+        }
+        .register-link {
+            color: #e30613; /* Enlace de registro en rojo */
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .register-link:hover {
+            color: #a00404;
+            text-decoration: underline;
+        }
+        .bottom-text {
+            margin-top: 20px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        .bottom-link {
+            color: #e30613;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .bottom-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilo para el botón "Crear una cuenta" */
+        .btn-secondary-rounded {
+            background-color: transparent;
+            color: #e30613; /* Texto rojo */
+            border: 2px solid #e30613; /* Borde rojo */
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .btn-secondary-rounded:hover {
+            background-color: #e30613; /* Fondo rojo al pasar el ratón */
+            color: white; /* Texto blanco al pasar el ratón */
+        }
+
+        /*Estilos para crear una cuenta en el Navbar*/
+        .create-account-link {
+        color: white; /* Color del texto blanco */
+        text-decoration: none; /* Sin subrayado por defecto */
+        font-size: 0.95rem; /* Tamaño de fuente ligeramente más pequeño */
+        display: flex; /* Para alinear el icono y el texto */
+        align-items: center; /* Centrar verticalmente */
+        gap: 5px; /* Espacio entre el icono y el texto */
+        padding: 5px 10px; /* Padding para hacer clic más fácil */
+        border-radius: 5px; /* Ligeras esquinas redondeadas */
+        transition: background-color 0.3s ease; /* Transición suave al pasar el ratón */
+    }
+
+    .create-account-link:hover {
+        background-color: rgba(255, 255, 255, 0.2); /* Fondo ligeramente visible al pasar el ratón */
+        color: white; /* Asegura el color blanco al hover */
+    }
+
+    .create-account-link .fas {
+        font-size: 0.9em; /* Ajusta el tamaño del icono */
+    }
+
+    /*Estilos para los errores del login*/
+    .error-message {
+    color: #dc3545; /* Rojo de Bootstrap para errores */
+    background-color: #f8d7da; /* Fondo suave para el mensaje de error */
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 20px; /* Espacio debajo del mensaje */
+    display: none; /* Oculto por defecto, se mostrará con JavaScript */
+    text-align: left;
+    font-weight: bold;
+    margin-left: auto; /* Para centrar si el padre es flexbox */
+    margin-right: auto;
+    width: 100%; /* Ocupa todo el ancho del contenedor del formulario */
+    max-width: 100%; /* Asegura que no se exceda */
+    box-sizing: border-box; /* Incluye padding y borde en el width */
+}
+
+/*Estilos para el exito del login*/
+.success-message {
+    color: #28a745; /* Verde de Bootstrap para éxito */
+    background-color: #d4edda; /* Fondo suave para el mensaje de éxito */
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    display: none; /* Oculto por defecto */
+    text-align: left;
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="navbar-brand-custom">La Gran N</a>
+        <a href="/registro" class="create-account-link ms-auto">
+            Crear una cuenta
+        </a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="login-card">
+            <h2>Cuenta La Gran N</h2>
+            <h3>Iniciar sesión</h3>
+            
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+
+            <!-- FORMULARIO SIN action/method -->
+            <form id="login-form">
+                <div class="mb-3 text-start">
+                    <label for="email" class="form-label-custom">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" maxlength="50" placeholder="Correo" required autocomplete="username">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="password" class="form-label-custom">Contraseña</label>
+                    <input type="password" class="form-control" id="password" minlength="8" maxlength="20" placeholder="Contraseña(8 Carácteres Mínimo)" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-red">Iniciar sesión</button>
+            </form>
+
+            <div class="register-text">
+                <p>¿No tienes una cuenta?<br>
+                    <a href="/registro" class="btn btn-secondary-rounded">Regístrate</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const errorMessageDiv = document.getElementById('error-message');
+            const successMessageDiv = document.getElementById('success-message');
+
+            loginForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                errorMessageDiv.style.display = 'none';
+                successMessageDiv.style.display = 'none';
+
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            email: emailInput.value,     // ← CORREGIDO
+                            password: passwordInput.value 
+                        })
+                    });
+
+                    if (response.ok) {
+                        successMessageDiv.textContent = 'Inicio de sesión exitoso. Redirigiendo...';
+                        successMessageDiv.style.display = 'block';
+                        setTimeout(() => window.location.href = '/', 1500);
+                    } else {
+                        const errorText = await response.text();
+                        errorMessageDiv.textContent = errorText || 'Error al iniciar sesión.';
+                        errorMessageDiv.style.display = 'block';
+                    }
+                } catch (error) {
+                    errorMessageDiv.textContent = 'Error de conexión. Revisa tu internet.';
+                    errorMessageDiv.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login de Administrador</title>
+    <link rel="icon" href="img/pokebola.png" type="image/png">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Fondo gris claro */
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+        }
+        .navbar {
+            background-color: #0d6efd; /* Azul primario de Bootstrap */
+            padding: 0.5rem 1rem;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .navbar-brand:hover {
+            color: #e9ecef !important; /* Cambio leve al pasar el ratón */
+        }
+        .login-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Limita el ancho máximo */
+            margin-top: 60px; /* Espacio para la navbar */
+            text-align: center; /* Centra el texto dentro del contenedor */
+        }
+        .login-container h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #0d6efd; /* Azul primario para el título */
+        }
+        .btn-primary {
+            background-color: #0d6efd; /* Azul primario */
+            border-color: #0d6efd;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #0a58ca; /* Azul más oscuro al hover */
+            border-color: #0a58ca;
+        }
+        #message .alert {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">La Gran N</a>
+        </div>
+    </nav>
+
+    <!-- Contenedor del login -->
+    <div class="login-container">
+        <h2>Login de Administrador</h2>
+        <form id="adminLoginForm" action="/admin-login" method="POST">
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+        <div id="message" class="mt-3 text-center"></div>
+    </div>
+
+    <!-- Bootstrap JS y dependencias -->
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.text();
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                window.location.href = data; // Redirige a la URL devuelta (ej. /admin)
+            } else {
+                messageDiv.innerHTML = `<div class="alert alert-danger">${data}</div>`;
+            }
+        });
+    </script>
+</body>
+</html>

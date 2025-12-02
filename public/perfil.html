@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Gran N - Mi Perfil</title>
+    <link rel="icon" href="img/icono.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #e30613;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand-custom {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+        }
+        .profile-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .profile-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .profile-link .fas {
+            font-size: 0.9em;
+        }
+        .logout-link {
+            color: white;
+            text-decoration: none;
+            background-color: #a00404;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .logout-link:hover {
+            background-color: #7b0303;
+        }
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .profile-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        .profile-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: #333;
+        }
+        .form-label-custom {
+            text-align: left;
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .btn-red {
+            background-color: #e30613;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn-red:hover {
+            background-color: #a00404;
+            color: white;
+        }
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: left;
+            font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .success-message {
+            color: #28a745;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: left;
+            font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .password-mismatch-msg {
+            color: #e30613;
+            font-size: 0.85rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            text-align: left;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="navbar-brand-custom">La Gran N</a>
+        <div class="d-flex align-items-center">
+            <a href="/perfil" class="profile-link me-3">
+                <i class="fas fa-user-circle"></i> Mi Perfil
+            </a>
+            <a href="/logout" class="logout-link">
+                Cerrar Sesión <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="profile-card">
+            <h2>Editar Perfil</h2>
+            
+            <div id="profile-error-message" class="error-message"></div>
+            <div id="profile-success-message" class="success-message"></div>
+
+            <form id="profile-form">
+                <div class="mb-3 text-start">
+                    <label for="username" class="form-label-custom">Nombre de usuario</label>
+                    <input type="text" class="form-control" id="username" name="username" maxlength="18" required>
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="genero" class="form-label-custom">Sexo</label>
+                    <select class="form-select" id="genero" name="genero" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="telefono" class="form-label-custom">Número de teléfono</label>
+                    <input type="number" class="form-control" id="telefono" name="telefono" placeholder="Opcional" oninput="if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="10">
+                </div>
+
+                <hr class="my-4"> <h3>Cambiar Contraseña</h3>
+                <p class="text-muted" style="font-size: 0.9rem;">Solo llena estos campos si deseas cambiar tu contraseña.</p>
+                <div class="mb-3 text-start">
+                    <label for="oldPassword" class="form-label-custom">Contraseña Anterior</label>
+                    <input type="password" class="form-control" id="oldPassword" name="oldPassword" minlength="8" maxlength="20" autocomplete="current-password">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="newPassword" class="form-label-custom">Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="newPassword" name="newPassword" minlength="8" maxlength="20" autocomplete="new-password">
+                </div>
+                <div class="mb-3 text-start">
+                    <label for="confirmNewPassword" class="form-label-custom">Confirmar Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="confirmNewPassword" name="confirmNewPassword" minlength="8" maxlength="20" autocomplete="new-password">
+                    <small id="newPasswordMismatch" class="password-mismatch-msg">Las nuevas contraseñas no coinciden.</small>
+                </div>
+
+                <button type="submit" class="btn btn-red">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" integrity="sha512-u3fPA7V8qQmhBPNT5quvaXVa1mnnLSXUep5PS1qo5NRzHwG19aHmNJnj1Q8hpA/nBWZtZD4r4AX6YOt5ynLN2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const profileForm = document.getElementById('profile-form');
+            const usernameInput = document.getElementById('username');
+            const generoSelect = document.getElementById('genero');
+            const telefonoInput = document.getElementById('telefono');
+            const oldPasswordInput = document.getElementById('oldPassword');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+            const newPasswordMismatchMsg = document.getElementById('newPasswordMismatch');
+            const errorMessageDiv = document.getElementById('profile-error-message');
+            const successMessageDiv = document.getElementById('profile-success-message');
+
+            // Función para mostrar mensajes
+            function showMessage(type, message) {
+                errorMessageDiv.style.display = 'none';
+                successMessageDiv.style.display = 'none';
+                if (type === 'error') {
+                    errorMessageDiv.textContent = message;
+                    errorMessageDiv.style.display = 'block';
+                } else if (type === 'success') {
+                    successMessageDiv.textContent = message;
+                    successMessageDiv.style.display = 'block';
+                }
+            }
+
+            // Función para cargar los datos actuales del usuario
+            async function loadUserData() {
+                try {
+                    const response = await fetch('/api/obtener-perfil');
+                    if (response.ok) {
+                        const userData = await response.json();
+                        usernameInput.value = userData.username;
+                        generoSelect.value = userData.genero || ''; // Asegura que el valor coincida
+                        telefonoInput.value = userData.telefono || '';
+                    } else if (response.status === 401) {
+                        // Si no está autenticado, el middleware isAuthenticated ya lo redirigió.
+                        // Pero por si acaso, si llega aquí sin redirigir:
+                        window.location.href = '/login';
+                    } else {
+                        const errorText = await response.text();
+                        showMessage('error', errorText || 'No se pudieron cargar los datos del perfil.');
+                    }
+                } catch (error) {
+                    console.error('Error al cargar datos del usuario:', error);
+                    showMessage('error', 'Error de conexión al cargar el perfil.');
+                }
+            }
+
+            // Cargar datos del usuario al cargar la página
+            loadUserData();
+
+            // Validación de contraseñas nuevas
+            function validateNewPasswords() {
+                if (newPasswordInput.value !== confirmNewPasswordInput.value && confirmNewPasswordInput.value !== '') {
+                    newPasswordMismatchMsg.style.display = 'block';
+                    confirmNewPasswordInput.setCustomValidity("Las contraseñas no coinciden.");
+                    return false;
+                } else {
+                    newPasswordMismatchMsg.style.display = 'none';
+                    confirmNewPasswordInput.setCustomValidity(""); // Resetea el mensaje de validación
+                    return true;
+                }
+            }
+
+            newPasswordInput.addEventListener('input', validateNewPasswords);
+            confirmNewPasswordInput.addEventListener('input', validateNewPasswords);
+
+            // Manejar el envío del formulario
+            profileForm.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Previene el envío por defecto
+
+                showMessage('success', ''); // Limpiar mensajes
+                showMessage('error', '');
+
+                const currentUsername = usernameInput.value;
+                const currentGenero = generoSelect.value;
+                const currentTelefono = telefonoInput.value;
+                const oldPassword = oldPasswordInput.value;
+                const newPassword = newPasswordInput.value;
+                const confirmNewPassword = confirmNewPasswordInput.value;
+
+                // Validación de campos obligatorios para datos básicos del perfil (no contraseña)
+                if (!currentUsername || !currentGenero) {
+                    showMessage('error', 'El nombre de usuario y el sexo son campos obligatorios.');
+                    return;
+                }
+
+                // Si se está intentando cambiar la contraseña
+                if (oldPassword || newPassword || confirmNewPassword) {
+                    if (!oldPassword || !newPassword || !confirmNewPassword) {
+                        showMessage('error', 'Para cambiar la contraseña, debes rellenar "Contraseña Anterior", "Nueva Contraseña" y "Confirmar Nueva Contraseña".');
+                        return;
+                    }
+                    if (!validateNewPasswords()) { // Vuelve a validar la coincidencia de contraseñas nuevas
+                        return;
+                    }
+                    if (newPassword.length < 8 || newPassword.length > 20) {
+                        showMessage('error', 'La nueva contraseña debe tener entre 8 y 20 caracteres.');
+                        return;
+                    }
+                } else if (newPassword.length > 0 || oldPassword.length > 0 || confirmNewPassword.length > 0) {
+                    // Si se llenó solo una parte de la sección de contraseña
+                    showMessage('error', 'Para cambiar la contraseña, debes rellenar "Contraseña Anterior", "Nueva Contraseña" y "Confirmar Nueva Contraseña".');
+                    return;
+                }
+                
+                // Si la nueva contraseña y la confirmación no son vacías pero no coinciden
+                if (newPassword && confirmNewPassword && newPassword !== confirmNewPassword) {
+                    showMessage('error', 'Las nuevas contraseñas no coinciden.');
+                    return;
+                }
+
+                try {
+                    console.log('Datos enviados:', { username: currentUsername, genero: currentGenero, telefono: currentTelefono, oldPassword, newPassword });
+                    const response = await fetch('/api/actualizar-perfil', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: currentUsername, genero: currentGenero, telefono: currentTelefono, oldPassword, newPassword })
+                    });
+
+                    if (response.ok) {
+                        showMessage('success', '¡Perfil actualizado con éxito!');
+                        oldPasswordInput.value = '';
+                        newPasswordInput.value = '';
+                        confirmNewPasswordInput.value = '';
+                        newPasswordMismatchMsg.style.display = 'none';
+                        setTimeout(() => window.location.href = '/login', 2000); // Redirige después de 2 segundos
+                    } else {
+                        const errorText = await response.text();
+                        showMessage('error', errorText || 'Error desconocido al actualizar el perfil.');
+                    }
+                } catch (error) {
+                    console.error('Error al enviar datos del perfil:', error);
+                    showMessage('error', 'No se pudo conectar con el servidor para actualizar el perfil.');
+                }
+            }); // Cierre del evento submit
+        }); // Cierre del DOMContentLoaded
+    </script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="icon" href="img/pokebola.png" type="image/png">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        .navbar {
+            background-color: #0d6efd;
+        }
+        .navbar-brand, .navbar-nav .nav-link {
+            color: white !important;
+        }
+        .navbar-brand:hover, .navbar-nav .nav-link:hover {
+            color: #e9ecef !important;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .section-title {
+            color: #0d6efd;
+            margin-bottom: 1rem;
+        }
+        .table-container {
+            margin-bottom: 2rem;
+        }
+        .btn-custom {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0a58ca;
+            color: white;
+        }
+        #message {
+            margin-top: 1rem;
+        }
+        #confirmDeleteModal .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        #confirmDeleteModal .modal-header {
+            border-bottom: none;
+            background-color: #dc3545;
+            color: white;
+        }
+        #confirmDeleteModal .modal-footer {
+            border-top: none;
+        }
+        #confirmDeleteModal .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        #confirmDeleteModal .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #c82333;
+        }
+        #confirmDeleteModal .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        #confirmDeleteModal .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">La Gran N</a>
+            <button class="btn btn-custom ms-auto" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <!-- Sección de Usuarios -->
+        <h2 class="section-title">Gestión de Usuarios</h2>
+        <div class="table-container">
+            <table class="table table-striped" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Correo</th>
+                        <th>Género</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Sección de Productos -->
+        <h2 class="section-title">Gestión de Productos</h2>
+        <div class="mb-3">
+            <button class="btn btn-custom" id="addProductBtn">Agregar Producto</button>
+        </div>
+        <div class="table-container">
+            <table class="table table-striped" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Modal para agregar/editar producto -->
+        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">Agregar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="productForm">
+                            <input type="hidden" id="productId">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="productName" maxlength="50" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productDescription" class="form-label">Descripción</label>
+                                <input type="text" class="form-control" id="productDescription" maxlength="200" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Precio</label>
+                                <input type="number" step="0.01" class="form-control" id="productPrice" min="0" max="900000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productStock" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="productStock" min="0" max="1000" required>
+                            </div>
+                            <button type="submit" class="btn btn-custom">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación de eliminación -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de eliminar este <span id="deleteItemType"></span>?</p>
+                        <p class="text-muted"><small>ID: <span id="deleteItemId"></span></small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensajes -->
+        <div id="message" class="text-center"></div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cargar usuarios y productos al iniciar
+        async function loadData() {
+            try {
+                const [usersResponse, productsResponse] = await Promise.all([
+                    fetch('/api/usuarios'),
+                    fetch('/api/productos')
+                ]);
+                const users = await usersResponse.json();
+                const products = await productsResponse.json();
+
+                const usersBody = document.getElementById('usersBody');
+                const productsBody = document.getElementById('productsBody');
+                usersBody.innerHTML = '';
+                productsBody.innerHTML = '';
+
+                // === USUARIOS (CORREGIDO: id_registro) ===
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id_registro}</td>
+                        <td>${user.username}</td>
+                        <td>${user.correo}</td>
+                        <td>${user.genero}</td>
+                        <td>${user.telefono || 'N/A'}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm deleteUser" data-id="${user.id_registro}">Eliminar</button>
+                        </td>
+                    `;
+                    usersBody.appendChild(row);
+                });
+
+                // === PRODUCTOS (CORREGIDO: id_producto) ===
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.id_producto}</td>
+                        <td>${product.nombre}</td>
+                        <td>${product.descripcion}</td>
+                        <td>${product.precio}</td>
+                        <td>${product.stock}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm editProduct" data-id="${product.id_producto}">Editar</button>
+                            <button class="btn btn-danger btn-sm deleteProduct" data-id="${product.id_producto}">Eliminar</button>
+                        </td>
+                    `;
+                    productsBody.appendChild(row);
+                });
+            } catch (error) {
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error al cargar datos: ${error.message}</div>`;
+            }
+        }
+
+        // Agregar/Editar producto
+        document.getElementById('addProductBtn').addEventListener('click', () => {
+            document.getElementById('productId').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productModalLabel').textContent = 'Agregar Producto';
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        });
+
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/productos/${id}` : '/api/productos';
+            const name = document.getElementById('productName').value;
+            const description = document.getElementById('productDescription').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+
+            if (price < 0 || price > 900000) {
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">El precio debe estar entre 0 y 900000.</div>`;
+                return;
+            }
+            if (stock < 0 || stock > 1000) {
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">El stock debe estar entre 0 y 1000.</div>`;
+                return;
+            }
+
+            const body = { nombre: name, descripcion: description, precio: price, stock: stock };
+
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (response.ok) {
+                    document.getElementById('message').innerHTML = `<div class="alert alert-success">Producto ${id ? 'actualizado' : 'creado'} con éxito</div>`;
+                    bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+                    loadData();
+                } else {
+                    const error = await response.text();
+                    document.getElementById('message').innerHTML = `<div class="alert alert-danger">${error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            }
+        });
+
+        // Delegación de eventos
+        document.getElementById('usersTable').addEventListener('click', async (e) => {
+            if (e.target.classList.contains('deleteUser')) {
+                const id = e.target.getAttribute('data-id');
+                document.getElementById('deleteItemType').textContent = 'usuario';
+                document.getElementById('deleteItemId').textContent = id;
+                const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                modal.show();
+
+                document.getElementById('confirmDeleteBtn').onclick = async () => {
+                    try {
+                        const response = await fetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            document.getElementById('message').innerHTML = `<div class="alert alert-success">Usuario eliminado con éxito</div>`;
+                            modal.hide();
+                            loadData();
+                        } else {
+                            const error = await response.text();
+                            document.getElementById('message').innerHTML = `<div class="alert alert-danger">${error}</div>`;
+                        }
+                    } catch (error) {
+                        document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                    }
+                };
+            }
+        });
+
+        document.getElementById('productsTable').addEventListener('click', async (e) => {
+            if (e.target.classList.contains('editProduct')) {
+                const id = e.target.getAttribute('data-id');
+                try {
+                    const response = await fetch(`/api/productos/${id}`);
+                    const product = await response.json();
+                    document.getElementById('productId').value = product.id_producto;
+                    document.getElementById('productName').value = product.nombre;
+                    document.getElementById('productDescription').value = product.descripcion;
+                    document.getElementById('productPrice').value = product.precio;
+                    document.getElementById('productStock').value = product.stock;
+                    document.getElementById('productModalLabel').textContent = 'Editar Producto';
+                    new bootstrap.Modal(document.getElementById('productModal')).show();
+                } catch (error) {
+                    document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                }
+            } else if (e.target.classList.contains('deleteProduct')) {
+                const id = e.target.getAttribute('data-id');
+                document.getElementById('deleteItemType').textContent = 'producto';
+                document.getElementById('deleteItemId').textContent = id;
+                const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                modal.show();
+
+                document.getElementById('confirmDeleteBtn').onclick = async () => {
+                    try {
+                        const response = await fetch(`/api/productos/${id}`, { method: 'DELETE' });
+                        if (response.ok) {
+                            document.getElementById('message').innerHTML = `<div class="alert alert-success">Producto eliminado con éxito</div>`;
+                            modal.hide();
+                            loadData();
+                        } else {
+                            const error = await response.text();
+                            document.getElementById('message').innerHTML = `<div class="alert alert-danger">${error}</div>`;
+                        }
+                    } catch (error) {
+                        document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                    }
+                };
+            }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/logout', { method: 'GET' });
+                if (response.ok) {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = `<div class="alert alert-danger">Error al cerrar sesión: ${error.message}</div>`;
+            }
+        });
+
+        // Cargar datos al iniciar
+        loadData();
+    </script>
+</body>
+</html>
