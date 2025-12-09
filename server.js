@@ -8,7 +8,7 @@ const { Sequelize, DataTypes, Op } = require('sequelize');
 
 const PORT = process.env.PORT || 3000;
 
-// ========= CONEXIÓN A POSTGRESQL CON DATABASE_URL (Render / Railway) =========
+// ========= CONEXIÓN POSTGRESQL CON DATABASE_URL (Render) =========
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -26,10 +26,7 @@ sequelize.authenticate()
     .then(() => console.log('Conectado a PostgreSQL con éxito.'))
     .catch(err => console.error('Error al conectar a PostgreSQL:', err));
 
-// ====================================================================
-// === MODELOS SEQUELIZE (exactamente como los tenías) ===
-// ====================================================================
-
+// ==================== MODELOS ====================
 const Registro = sequelize.define('registro', {
     id_registro: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     username: { type: DataTypes.STRING(18), allowNull: false, unique: true },
@@ -42,14 +39,8 @@ const Registro = sequelize.define('registro', {
     tableName: 'registros',
     timestamps: false,
     hooks: {
-        beforeCreate: async (user) => {
-            user.password = await bcrypt.hash(user.password, 10);
-        },
-        beforeUpdate: async (user) => {
-            if (user.changed('password')) {
-                user.password = await bcrypt.hash(user.password, 10);
-            }
-        }
+        beforeCreate: async (user) => { user.password = await bcrypt.hash(user.password, 10); },
+        beforeUpdate: async (user) => { if (user.changed('password')) user.password = await bcrypt.hash(user.password, 10); }
     }
 });
 
@@ -64,14 +55,8 @@ const Admin = sequelize.define('admin', {
     tableName: 'admins',
     timestamps: false,
     hooks: {
-        beforeCreate: async (admin) => {
-            admin.password = await bcrypt.hash(admin.password, 10);
-        },
-        beforeUpdate: async (admin) => {
-            if (admin.changed('password')) {
-                admin.password = await bcrypt.hash(admin.password, 10);
-            }
-        }
+        beforeCreate: async (admin) => { admin.password = await bcrypt.hash(admin.password, 10); },
+        beforeUpdate: async (admin) => { if (admin.changed('password')) admin.password = await bcrypt.hash(admin.password, 10); }
     }
 });
 
@@ -108,12 +93,10 @@ Compra.belongsTo(Producto, { foreignKey: 'id_producto', targetKey: 'id_producto'
 
 // Sincronizar tablas
 sequelize.sync({ alter: true })
-    .then(() => console.log('Tablas sincronizadas.'))
+    .then(() => console.log('Tablas sincronizadas correctamente.'))
     .catch(err => console.error('Error al sincronizar tablas:', err));
 
-// ====================================================================
-// === MIDDLEWARES ===
-// ====================================================================
+// ==================== MIDDLEWARES ====================
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -124,26 +107,13 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24
-    }
+    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-function isAuthenticated(req, res, next) {
-    if (req.session.registroId) next();
-    else res.redirect('/login');
-}
+const isAuthenticated = (req, res, next) => req.session.registroId ? next() : res.redirect('/login');
+const isAdmin = (req, res, next) => req.session.role === 'admin' ? next() : res.status(403).send('Acceso denegado');
 
-function isAdmin(req, res, next) {
-    if (req.session.role === 'admin') next();
-    else res.status(403).send('Acceso denegado: Solo para administradores.');
-}
-
-// ====================================================================
-// === RUTAS ESTÁTICAS ===
-// ====================================================================
+// ==================== RUTAS ESTÁTICAS ====================
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/productos', (req, res) => res.sendFile(path.join(__dirname, 'public', 'productos.html')));
 app.get('/novedades', (req, res) => res.sendFile(path.join(__dirname, 'public', 'novedades.html')));
@@ -154,9 +124,7 @@ app.get('/admin-login', (req, res) => res.sendFile(path.join(__dirname, 'public'
 app.get('/luigis-mansion-2.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'luigis-mansion-2.html')));
 app.get('/new-super-mario-bros-u-deluxe.html', (req, res) => res.sendFile(path.join(__dirname, 'public', 'new-super-mario-bros-u-deluxe.html')));
 
-// ====================================================================
-// === RUTAS API (TODAS TUS RUTAS ORIGINALES) ===
-// ====================================================================
+// ==================== RUTAS API ====================
 
 // Registro
 app.post('/registro', async (req, res) => {
@@ -170,7 +138,7 @@ app.post('/registro', async (req, res) => {
 
     try {
         const existe = await Registro.findOne({ 
-            where: { [Op.or]: [{ correo: correo.toLowerCase() }, { username: username }] } 
+            where: { [Op.or]: [{ correo: correo.toLowerCase() }, { username }] } 
         });
         if (existe) return res.status(409).send('Error: El correo electrónico o nombre de usuario ya está en uso.');
 
@@ -181,32 +149,24 @@ app.post('/registro', async (req, res) => {
         res.status(201).send('Registro exitoso');
     } catch (error) {
         console.error('Error al registrar:', error);
-        if (error.name === 'SequelizeUniqueConstraintError') {
-             return res.status(409).send('Error: El nombre de usuario o correo electrónico ya están en uso.');
-        }
         res.status(500).send('Hubo un error en el servidor.');
     }
 });
 
-// Login usuario
+// Login
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).send('Por favor, ingresa tu correo y contraseña.');
 
     try {
         const usuario = await Registro.findOne({
-            where: {
-                [Op.or]: [
-                    { correo: email.toLowerCase() },
-                    { username: email }
-                ]
-            }
+            where: { [Op.or]: [{ correo: email.toLowerCase() }, { username: email }] }
         });
 
         if (!usuario || !await bcrypt.compare(password, usuario.password))
             return res.status(401).send('Credenciales incorrectas.');
 
-        req.session.registroId = usuario.id_registro; 
+        req.session.registroId = usuario.id_registro;
         req.session.username = usuario.username;
         res.status(200).send('Inicio de sesión exitoso');
     } catch (error) {
@@ -215,7 +175,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// VERIFICAR ESTADO DE SESIÓN (¡ESTA ERA LA QUE FALTABA!)
+// ESTADO DE SESIÓN (¡ESTA ES LA QUE HACE QUE APAREZCA EL MENÚ!)
 app.get('/api/user-status', (req, res) => {
     if (req.session.registroId) {
         res.json({
@@ -235,7 +195,7 @@ app.post('/admin-login', async (req, res) => {
         if (!admin || !await bcrypt.compare(password, admin.password))
             return res.status(401).send('Credenciales incorrectas.');
 
-        req.session.adminId = admin.id_admin; 
+        req.session.adminId = admin.id_admin;
         req.session.username = admin.username;
         req.session.role = admin.role;
         res.status(200).send('/admin');
@@ -245,25 +205,8 @@ app.post('/admin-login', async (req, res) => {
     }
 });
 
-// === CRUD Usuarios (Admin) ===
-app.get('/api/usuarios', isAdmin, async (req, res) => {
-    const usuarios = await Registro.findAll({ attributes: { exclude: ['password'] } });
-    res.json(usuarios);
-});
-
-app.put('/api/usuarios/:id', isAdmin, async (req, res) => {
-    const { username, genero, telefono } = req.body;
-    const [updated] = await Registro.update({ username, genero, telefono }, { where: { id_registro: req.params.id } });
-    updated ? res.send('Usuario actualizado.') : res.status(404).send('Usuario no encontrado.');
-});
-
-app.delete('/api/usuarios/:id', isAdmin, async (req, res) => {
-    const deleted = await Registro.destroy({ where: { id_registro: req.params.id } });
-    deleted ? res.send('Usuario eliminado.') : res.status(404).send('Usuario no encontrado.');
-});
-
-// === CRUD Productos ===
-app.get('/api/productos', isAdmin, async (req, res) => {
+// CRUD Productos
+app.get('/api/productos', async (req, res) => {
     const productos = await Producto.findAll();
     res.json(productos);
 });
@@ -273,57 +216,10 @@ app.get('/api/productos/:id', async (req, res) => {
     producto ? res.json(producto) : res.status(404).send('Producto no encontrado.');
 });
 
-app.post('/api/productos', isAdmin, async (req, res) => {
-    const { nombre, descripcion, precio, stock } = req.body;
-    if (!nombre || !descripcion || !precio || !stock) return res.status(400).send('Todos los campos son obligatorios.');
-    await Producto.create({ nombre, descripcion, precio, stock });
-    res.status(201).send('Producto creado.');
-});
-
-app.put('/api/productos/:id', isAdmin, async (req, res) => {
-    const { nombre, descripcion, precio, stock } = req.body;
-    const [updated] = await Producto.update({ nombre, descripcion, precio, stock }, { where: { id_producto: req.params.id } });
-    updated ? res.send('Producto actualizado.') : res.status(404).send('Producto no encontrado.');
-});
-
-app.delete('/api/productos/:id', isAdmin, async (req, res) => {
-    const deleted = await Producto.destroy({ where: { id_producto: req.params.id } });
-    deleted ? res.send('Producto eliminado.') : res.status(404).send('Producto no encontrado.');
-});
-
-// === Perfil ===
-app.get('/api/obtener-perfil', isAuthenticated, async (req, res) => {
-    const user = await Registro.findByPk(req.session.registroId, { attributes: { exclude: ['password'] } });
-    user ? res.json(user) : res.status(404).send('Usuario no encontrado.');
-});
-
-app.post('/api/actualizar-perfil', isAuthenticated, async (req, res) => {
-    const { username, genero, telefono, oldPassword, newPassword } = req.body;
-    const user = await Registro.findByPk(req.session.registroId);
-
-    if (!user) return res.status(404).send('Usuario no encontrado.');
-
-    const updates = {};
-    if (username) updates.username = username;
-    if (genero) updates.genero = genero;
-    if (telefono !== undefined) updates.telefono = telefono;
-
-    if (oldPassword && newPassword) {
-        if (!await bcrypt.compare(oldPassword, user.password))
-            return res.status(401).send('Contraseña anterior incorrecta.');
-        if (await bcrypt.compare(newPassword, user.password))
-            return res.status(400).send('No puedes usar la misma contraseña.');
-        updates.password = newPassword; 
-    }
-
-    await user.update(updates);
-    res.send('Perfil actualizado.');
-});
-
-// === Compra ===
+// Compra
 app.post('/api/comprar/:productId', isAuthenticated, async (req, res) => {
     const { productId } = req.params;
-    const { quantity = 1, name, phone, address, postalCode, cardNumber, expiryDate, cvv } = req.body;
+    const { quantity = 1, name, phone, address, postalCode } = req.body;
 
     if (!name || !phone || !address || !postalCode)
         return res.status(400).json({ message: 'Todos los campos de envío son obligatorios.' });
@@ -349,39 +245,20 @@ app.post('/api/comprar/:productId', isAuthenticated, async (req, res) => {
             success: true,
             compraId: nuevaCompra.id_compra
         });
-
     } catch (error) {
         console.error('Error en compra:', error);
         res.status(500).json({ message: 'Error al procesar la compra' });
     }
 });
 
-// === Logout y Admin ===
+// Logout
 app.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/login'));
 });
 
 app.get('/admin', isAdmin, (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
-// Crear admin por defecto (solo en desarrollo)
+// Iniciar servidor
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);
-
-    if (process.env.NODE_ENV !== 'production') {
-        crearAdminPorDefecto();
-    }
 });
-
-async function crearAdminPorDefecto() {
-    const adminEmail = 'admin@gmail.com';
-    const existe = await Admin.findOne({ where: { correo: adminEmail } });
-    if (!existe) {
-        await Admin.create({
-            username: 'admin',
-            correo: adminEmail,
-            password: 'admin123',
-            role: 'admin'
-        });
-        console.log('Admin creado: admin@gmail.com / admin123');
-    }
-}
