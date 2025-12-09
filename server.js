@@ -10,18 +10,26 @@ const PORT = process.env.PORT || 3000;
 // ====================================================================
 // === CONFIGURACIÓN DE SEQUELIZE (MySQL) ===
 // ====================================================================
+const { Sequelize, DataTypes, Op } = require('sequelize');
+
+// CAMBIO: PostgreSQL en vez de MySQL
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
+    process.env.DB_NAME,           // Railway usa DATABASE_URL o estas variables
     process.env.DB_USER,
     process.env.DB_PASSWORD,
     {
         host: process.env.DB_HOST,
-        dialect: 'mysql',
-        logging: false,
-        pool: { max: 5, min: 0, acquire: 30000, idle: 10000 }
+        port: process.env.DB_PORT || 5432,
+        dialect: 'postgres',       // ← SOLO ESTO CAMBIA
+        dialectOptions: {
+            ssl: {                     // ← NECESARIO para PostgreSQL en Railway
+                require: true,
+                rejectUnauthorized: false
+            }
+        },
+        logging: false
     }
 );
-
 // Probar conexión
 sequelize.authenticate()
     .then(() => console.log('Conectado a MySQL con éxito.'))
