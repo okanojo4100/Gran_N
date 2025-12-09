@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // ====================================================================
 // === CONFIGURACIÓN DE SEQUELIZE (MySQL) ===
 // ====================================================================
-const { Sequelize, DataTypes, Op } = require('sequelize');
 
 // CAMBIO: PostgreSQL en vez de MySQL
 const sequelize = new Sequelize(
